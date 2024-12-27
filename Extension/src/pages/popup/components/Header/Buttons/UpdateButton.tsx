@@ -61,6 +61,7 @@ export const UpdateButton = () => {
                 classname="icon--24 icon--header"
                 animationCondition={filtersUpdating}
                 animationClassname="icon--loading"
+                aria-hidden="true"
             />
         </button>
     );
