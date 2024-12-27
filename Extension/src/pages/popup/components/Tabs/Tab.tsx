@@ -22,6 +22,11 @@ import cn from 'classnames';
 
 type TabParams = {
     /**
+     * Tab id.
+     */
+    id: string,
+
+    /**
      * Tab title.
      */
     title: string,
@@ -32,24 +37,35 @@ type TabParams = {
     active: boolean,
 
     /**
+     * Panel id.
+     */
+    panelId: string,
+
+    /**
      * Click handler.
      */
     onClick: () => void,
 };
 
 export const Tab = ({
+    id,
     title,
     active,
+    panelId,
     onClick,
 }: TabParams) => {
     const tabClass = cn('tabs__tab', { 'tabs__tab--active': active });
 
     return (
         <button
+            id={id}
+            role="tab"
             type="button"
             className={tabClass}
             onClick={onClick}
             title={title}
+            aria-selected={active}
+            aria-controls={panelId}
         >
             {title}
         </button>

@@ -23,8 +23,16 @@ import cn from 'classnames';
 
 import { translator } from '../../../../common/translators/translator';
 import { isTransitionAppState } from '../../state-machines/app-state-machine';
-import { Actions } from '../Actions';
-import { StatsTable } from '../Stats/StatsTable';
+import {
+    Actions,
+    ACTIONS_TAB_ID,
+    ACTIONS_PANEL_ID,
+} from '../Actions';
+import {
+    StatsTable,
+    STATS_TAB_ID,
+    STATS_PANEL_ID,
+} from '../Stats/StatsTable';
 import { ViewState } from '../../constants';
 import { popupStore } from '../../stores/PopupStore';
 
@@ -60,15 +68,23 @@ export const Tabs = observer(() => {
             })}
         >
             <div className="tabs__panel">
-                <div className="tabs__panel-wrapper">
+                <div
+                    role="tablist"
+                    className="tabs__panel-wrapper"
+                    aria-label={translator.getMessage('popup_tabs')}
+                >
                     <Tab
+                        id={ACTIONS_TAB_ID}
                         title={translator.getMessage('popup_tab_actions')}
                         active={viewState === ViewState.Actions}
+                        panelId={ACTIONS_PANEL_ID}
                         onClick={handleTabClick(ViewState.Actions)}
                     />
                     <Tab
+                        id={STATS_TAB_ID}
                         title={translator.getMessage('popup_tab_statistics')}
                         active={viewState === ViewState.Stats}
+                        panelId={STATS_PANEL_ID}
                         onClick={handleTabClick(ViewState.Stats)}
                     />
                 </div>
