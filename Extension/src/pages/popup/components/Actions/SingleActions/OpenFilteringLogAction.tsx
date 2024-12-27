@@ -39,15 +39,17 @@ export const OpenFilteringLogAction = ({ className }: SingleActionParams) => {
         <button
             type="button"
             className={className}
+            title={translator.getMessage('popup_open_filtering_log')}
             onClick={handleOpenFilteringLog}
         >
             <Icon
                 id="#sandwich"
                 classname="icon--24 icon--action--sandwich"
+                aria-hidden="true"
             />
-            <div className="action__title">
+            <span className="action__title">
                 {translator.getMessage('popup_open_filtering_log')}
-            </div>
+            </span>
         </button>
     );
 };

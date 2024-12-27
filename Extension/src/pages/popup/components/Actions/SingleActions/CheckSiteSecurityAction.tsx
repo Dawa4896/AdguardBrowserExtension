@@ -50,15 +50,17 @@ export const CheckSiteSecurityAction = ({ className, isFilteringPossible, url }:
         <button
             type="button"
             className={className}
+            title={translator.getMessage('popup_security_report')}
             onClick={handleCheckSiteSecurity}
         >
             <Icon
                 id="#info"
                 classname="icon--24 icon--action--info"
+                aria-hidden="true"
             />
-            <div className="action__title">
+            <span className="action__title">
                 {translator.getMessage('popup_security_report')}
-            </div>
+            </span>
         </button>
     );
 };

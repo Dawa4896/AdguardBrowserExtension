@@ -69,21 +69,20 @@ export const ResetPageUserRulesAction = ({ className, isFilteringPossible, url }
         <button
             type="button"
             className={className}
-            onClick={handlePageUserRulesReset}
+            title={translator.getMessage('popup_reset_page_user_rules')}
             disabled={removingUserRules}
+            onClick={handlePageUserRulesReset}
         >
             <Icon
                 id={removeUserRulesIconId}
                 classname={removeUserRulesIconClassname}
                 animationCondition={removingUserRules}
                 animationClassname="icon--loading"
+                aria-hidden="true"
             />
-            <div
-                className="action__title"
-                title={translator.getMessage('popup_reset_page_user_rules')}
-            >
+            <span className="action__title">
                 {translator.getMessage('popup_reset_page_user_rules')}
-            </div>
+            </span>
         </button>
     );
 };

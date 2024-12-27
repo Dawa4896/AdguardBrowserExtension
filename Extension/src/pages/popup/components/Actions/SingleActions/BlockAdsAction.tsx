@@ -42,15 +42,17 @@ export const BlockAdsAction = ({ className, isFilteringPossible }: SingleActionP
         <button
             type="button"
             className={className}
+            title={translator.getMessage('popup_block_site_ads_option')}
             onClick={handleBlockAds}
         >
             <Icon
                 id="#block-ad"
                 classname="icon--24 icon--action--block-ad"
+                aria-hidden="true"
             />
-            <div className="action__title">
+            <span className="action__title">
                 {translator.getMessage('popup_block_site_ads_option')}
-            </div>
+            </span>
         </button>
     );
 };
