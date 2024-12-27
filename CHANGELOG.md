@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Updated [@adguard/agtree] to v2.2.0.
+- Improved accessibility for visually impaired users [#3035].
 
 ### Fixed
 
@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `$popup,third-party` modifiers cause document blocking [#3012].
 - Don't show lines for absent metadata when adding a custom filter [#3057].
 
+[#3035]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3035
 [#3057]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3057
 [#3054]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3054
 [#3050]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3050
