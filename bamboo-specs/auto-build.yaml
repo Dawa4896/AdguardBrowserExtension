@@ -171,7 +171,7 @@ Update filters:
             pnpm install ${bamboo.varsPnpm}
 
             # Update filters before build.
-            pnpm resources:mv3
+            OPENAI_API_KEY=${bamboo.openAiExtensionBuildTokenPassword} pnpm resources:mv3
     - any-task:
         plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
         configuration:
@@ -227,6 +227,11 @@ AutoBuild:
             # publish zip versions of the extension.
             mv build/beta/chrome-mv3.zip artifacts/chrome-mv3-beta.zip
             mv build/release/chrome-mv3.zip artifacts/chrome-mv3-release.zip
+    - any-task:
+        plugin-key: com.atlassian.bamboo.plugins.vcs:task.vcs.commit
+        configuration:
+          commitMessage: 'skipci: Automatic increment build number'
+          selectedRepository: defaultRepository
     - inject-variables:
         # Doesn't matter which channel we use, because version is the same
         # for both channels.
@@ -287,10 +292,11 @@ Integration tests:
   requirements:
     - adg-docker: 'true'
 
+# Currently empty triggers to run the build manually.
+triggers: []
 # run release build at 11:00 every Tuesday, Thursday
 # https://confluence.atlassian.com/bamboo/constructing-a-cron-expression-in-bamboo-289277372.html
 # TODO: Uncomment after first couple of test runs.
-# triggers:
 #   - cron:
 #       expression: 0 0 11 ? * TUE,THU
 
