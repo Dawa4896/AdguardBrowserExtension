@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { observer } from 'mobx-react';
 
 import cn from 'classnames';
@@ -45,6 +45,8 @@ export const Tabs = observer(() => {
 
     const { viewState, appState } = store;
 
+    const [tabBtnShouldFocus, setTabBtnShouldFocus] = useState(false);
+
     const contentMap = {
         [ViewState.Actions]: Actions,
         [ViewState.Stats]: StatsTable,
@@ -61,6 +63,27 @@ export const Tabs = observer(() => {
         store.setViewState(viewState);
     };
 
+    const handleTabNavigation = (index: number) => {
+        const tabs = [ViewState.Actions, ViewState.Stats];
+
+        let newIndex = index;
+        if (index < 0) {
+            newIndex = tabs.length - 1;
+        } else if (index >= tabs.length) {
+            newIndex = 0;
+        }
+
+        store.setViewState(tabs[newIndex]!);
+    };
+
+    const handleTabListFocus = () => {
+        setTabBtnShouldFocus(true);
+    };
+
+    const handleTabListBlur = () => {
+        setTabBtnShouldFocus(false);
+    };
+
     return (
         <div
             className={cn('tabs', {
@@ -72,27 +95,33 @@ export const Tabs = observer(() => {
                     role="tablist"
                     className="tabs__panel-wrapper"
                     aria-label={translator.getMessage('popup_tabs')}
+                    aria-orientation="horizontal"
+                    onFocus={handleTabListFocus}
+                    onBlur={handleTabListBlur}
                 >
                     <Tab
                         id={ACTIONS_TAB_ID}
+                        index={0}
                         title={translator.getMessage('popup_tab_actions')}
                         active={viewState === ViewState.Actions}
                         panelId={ACTIONS_PANEL_ID}
+                        shouldFocus={tabBtnShouldFocus}
                         onClick={handleTabClick(ViewState.Actions)}
+                        onKeyNavigate={handleTabNavigation}
                     />
                     <Tab
                         id={STATS_TAB_ID}
+                        index={1}
                         title={translator.getMessage('popup_tab_statistics')}
                         active={viewState === ViewState.Stats}
                         panelId={STATS_PANEL_ID}
+                        shouldFocus={tabBtnShouldFocus}
                         onClick={handleTabClick(ViewState.Stats)}
+                        onKeyNavigate={handleTabNavigation}
                     />
                 </div>
             </div>
-            <div
-                className={tabContentClassName}
-                tabIndex={TabContent === contentMap[ViewState.Stats] ? 0 : -1}
-            >
+            <div className={tabContentClassName}>
                 <TabContent />
             </div>
         </div>

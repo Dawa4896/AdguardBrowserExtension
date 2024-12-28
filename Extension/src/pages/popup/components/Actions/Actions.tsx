@@ -49,6 +49,8 @@ const Actions = observer(() => {
             role="tabpanel"
             className="actions"
             aria-labelledby={ACTIONS_TAB_ID}
+            // A11Y: Allow focus on the tab panel so screen reader can read the content properly
+            tabIndex={0}
         >
             <BlockAdsAction isFilteringPossible={isFilteringPossible} className={actionChangingClassname} />
             <OpenFilteringLogAction className="action" />

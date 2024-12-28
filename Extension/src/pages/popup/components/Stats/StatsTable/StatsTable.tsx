@@ -60,6 +60,8 @@ export const StatsTable = observer(() => {
             role="tabpanel"
             className="stats"
             aria-labelledby={STATS_TAB_ID}
+            // A11Y: Allow focus on the tab panel so screen reader can read the content properly
+            tabIndex={0}
         >
             <ul className="stats__list">
                 {renderStatsByType}
