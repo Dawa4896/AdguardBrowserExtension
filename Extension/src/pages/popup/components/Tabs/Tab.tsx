@@ -16,20 +16,26 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, {
+    forwardRef,
+    useImperativeHandle,
+    useRef,
+} from 'react';
 
 import cn from 'classnames';
+
+export enum TabKey {
+    Left = 'ArrowLeft',
+    Right = 'ArrowRight',
+    Home = 'Home',
+    End = 'End',
+}
 
 type TabParams = {
     /**
      * Tab id.
      */
     id: string,
-
-    /**
-     * Tab index.
-     */
-    index: number;
 
     /**
      * Tab title.
@@ -47,12 +53,6 @@ type TabParams = {
     panelId: string,
 
     /**
-     * Whether the tab should focus.
-     * Used to focus the tab when it becomes active.
-     */
-    shouldFocus: boolean,
-
-    /**
      * Click handler.
      */
     onClick: () => void,
@@ -60,21 +60,21 @@ type TabParams = {
     /**
      * Keyboard navigation handler.
      *
-     * @param toIndex - Index of the tab to navigate to (`-1` for the last tab, `length` for the first tab).
+     * @param key - Pressed key.
      */
-    onKeyNavigate: (toIndex: number) => void,
+    onKeyNavigate: (key: TabKey) => void,
 };
 
-export const Tab = ({
-    id,
-    index,
-    title,
-    active,
-    panelId,
-    shouldFocus,
-    onClick,
-    onKeyNavigate,
-}: TabParams) => {
+export const Tab = forwardRef<HTMLButtonElement, TabParams>((props, forwardedRef) => {
+    const {
+        id,
+        title,
+        active,
+        panelId,
+        onClick,
+        onKeyNavigate,
+    } = props;
+
     const ref = useRef<HTMLButtonElement>(null);
     const tabClass = cn('tabs__tab', { 'tabs__tab--active': active });
 
@@ -84,68 +84,20 @@ export const Tab = ({
         }
     };
 
-    const activateTab = () => {
+    const handleClick = () => {
         onClick();
         focus();
     };
 
-    const handleFocus = () => {
-        if (!active) {
-            activateTab();
-        }
-    };
-
-    const handleMouseDown = (e: React.MouseEvent) => {
-        // only activate tab if it's the left button (mousedown gets triggered by all mouse buttons)
-        // but not when the control key is pressed (avoiding MacOS right click)
-        if (e.button === 0 && e.ctrlKey === false) {
-            activateTab();
-        } else {
-            // prevent focus to avoid accidental activation
-            e.preventDefault();
-        }
-    };
-
     const handleKeyDown = (e: React.KeyboardEvent) => {
-        let stopPropagation = false;
-
-        switch (e.key) {
-            case 'ArrowLeft':
-                onKeyNavigate(index - 1);
-                stopPropagation = true;
-                break;
-            case 'ArrowRight':
-                onKeyNavigate(index + 1);
-                stopPropagation = true;
-                break;
-            case 'Home':
-                onKeyNavigate(0);
-                stopPropagation = true;
-                break;
-            case 'End':
-                onKeyNavigate(-1);
-                stopPropagation = true;
-                break;
-            case 'Enter':
-            case ' ':
-                activateTab();
-                stopPropagation = true;
-                break;
-            default:
-                break;
-        }
-
-        if (stopPropagation) {
-            e.stopPropagation();
+        if (Object.values(TabKey).includes(e.key as TabKey)) {
             e.preventDefault();
+            e.stopPropagation();
+            onKeyNavigate(e.key as TabKey);
         }
     };
 
-    useEffect(() => {
-        if (shouldFocus && active) {
-            focus();
-        }
-    }, [active, shouldFocus]);
+    useImperativeHandle(forwardedRef, () => ref.current!);
 
     return (
         <button
@@ -157,12 +109,11 @@ export const Tab = ({
             title={title}
             aria-selected={active}
             aria-controls={panelId}
-            tabIndex={active ? 0 : -1}
-            onFocus={handleFocus}
-            onMouseDown={handleMouseDown}
+            tabIndex={active ? undefined : -1}
+            onClick={handleClick}
             onKeyDown={handleKeyDown}
         >
             {title}
         </button>
     );
-};
+});

@@ -16,7 +16,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { useContext, useState } from 'react';
+import React, { useContext, useRef } from 'react';
 import { observer } from 'mobx-react';
 
 import cn from 'classnames';
@@ -36,7 +36,7 @@ import {
 import { ViewState } from '../../constants';
 import { popupStore } from '../../stores/PopupStore';
 
-import { Tab } from './Tab';
+import { Tab, TabKey } from './Tab';
 
 import './tabs.pcss';
 
@@ -45,7 +45,8 @@ export const Tabs = observer(() => {
 
     const { viewState, appState } = store;
 
-    const [tabBtnShouldFocus, setTabBtnShouldFocus] = useState(false);
+    const actionsTabRef = useRef<HTMLButtonElement>(null);
+    const statsTabRef = useRef<HTMLButtonElement>(null);
 
     const contentMap = {
         [ViewState.Actions]: Actions,
@@ -63,25 +64,32 @@ export const Tabs = observer(() => {
         store.setViewState(viewState);
     };
 
-    const handleTabNavigation = (index: number) => {
+    const handleTabNavigation = (key: TabKey) => {
         const tabs = [ViewState.Actions, ViewState.Stats];
+        const tabsRefs = [actionsTabRef, statsTabRef];
 
-        let newIndex = index;
-        if (index < 0) {
-            newIndex = tabs.length - 1;
-        } else if (index >= tabs.length) {
-            newIndex = 0;
+        const currentTabIndex = tabs.indexOf(viewState);
+
+        let nextTabIndex = currentTabIndex;
+        switch (key) {
+            case TabKey.Left:
+                nextTabIndex = (currentTabIndex - 1 + tabs.length) % tabs.length;
+                break;
+            case TabKey.Right:
+                nextTabIndex = (currentTabIndex + 1) % tabs.length;
+                break;
+            case TabKey.Home:
+                nextTabIndex = 0;
+                break;
+            case TabKey.End:
+                nextTabIndex = tabs.length - 1;
+                break;
+            default:
+                break;
         }
 
-        store.setViewState(tabs[newIndex]!);
-    };
-
-    const handleTabListFocus = () => {
-        setTabBtnShouldFocus(true);
-    };
-
-    const handleTabListBlur = () => {
-        setTabBtnShouldFocus(false);
+        tabsRefs[nextTabIndex]!.current?.focus();
+        store.setViewState(tabs[nextTabIndex]!);
     };
 
     return (
@@ -96,26 +104,22 @@ export const Tabs = observer(() => {
                     className="tabs__panel-wrapper"
                     aria-label={translator.getMessage('popup_tabs')}
                     aria-orientation="horizontal"
-                    onFocus={handleTabListFocus}
-                    onBlur={handleTabListBlur}
                 >
                     <Tab
+                        ref={actionsTabRef}
                         id={ACTIONS_TAB_ID}
-                        index={0}
                         title={translator.getMessage('popup_tab_actions')}
                         active={viewState === ViewState.Actions}
                         panelId={ACTIONS_PANEL_ID}
-                        shouldFocus={tabBtnShouldFocus}
                         onClick={handleTabClick(ViewState.Actions)}
                         onKeyNavigate={handleTabNavigation}
                     />
                     <Tab
+                        ref={statsTabRef}
                         id={STATS_TAB_ID}
-                        index={1}
                         title={translator.getMessage('popup_tab_statistics')}
                         active={viewState === ViewState.Stats}
                         panelId={STATS_PANEL_ID}
-                        shouldFocus={tabBtnShouldFocus}
                         onClick={handleTabClick(ViewState.Stats)}
                         onKeyNavigate={handleTabNavigation}
                     />
