@@ -69,6 +69,7 @@ type AppStateData = {
 };
 
 export const Main = observer(() => {
+    // FIXME: Improve a11y
     const store = useContext(popupStore);
 
     const {

@@ -27,6 +27,7 @@ import { popupStore } from '../../../stores/PopupStore';
  * Pause/Resume button component.
  */
 export const ProtectionSwitch = observer(() => {
+    // FIXME: Probably need to improve a11y for this button
     const store = useContext(popupStore);
 
     const { applicationFilteringPaused, pauseApplicationFiltering, resumeApplicationFiltering } = store;

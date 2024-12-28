@@ -25,6 +25,7 @@ import { messenger } from '../../../../services/messenger';
 import { MIN_FILTERS_UPDATE_DISPLAY_DURATION_MS } from '../../../../common/constants';
 
 export const UpdateButton = () => {
+    // FIXME: Probably need to improve a11y for this button
     const [filtersUpdating, setFiltersUpdating] = useState(false);
 
     const updateFiltersWithMinDuration = addMinDurationTime(
